@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPQC & Leakage Test Logging System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 p-6 text-slate-800">
+  <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md p-6 space-y-6">
+    
+    <!-- Header & Batch Details -->
+    <header class="border-b pb-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">In-Process Quality Control & Leakage Test Record</h1>
+        <p class="text-xs text-slate-500">Document ID: IPQC-LTR-001 | SOP Compliance: SOP-PKG-042</p>
+      </div>
+      <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg text-right">
+        <span class="text-xs text-blue-600 font-semibold block">CURRENT STATUS</span>
+        <span class="text-sm font-bold text-blue-900">Packaging In Progress</span>
+      </div>
+    </header>
+
+    <!-- New Inspection Entry Form -->
+    <form id="ipqcForm" class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
+      <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Record New Inspection</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Time Stamp</label>
+          <input type="time" id="timeStamp" required class="w-full border rounded-md px-3 py-1.5 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Sample Qty (pcs)</label>
+          <input type="number" id="sampleQty" value="20" required class="w-full border rounded-md px-3 py-1.5 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Vacuum (mmHg)</label>
+          <input type="number" id="vacuumLevel" value="-380" required class="w-full border rounded-md px-3 py-1.5 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Hold Time (mins)</label>
+          <input type="number" id="holdTime" value="2" required class="w-full border rounded-md px-3 py-1.5 text-sm">
+        </div>
+      </div>
+
+      <!-- In-Process Quality Checks -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-200 pt-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Print Coding</label>
+          <select id="codingStatus" class="w-full border rounded-md px-3 py-1.5 text-sm">
+            <option value="Clear & Correct">Clear & Correct</option>
+            <option value="Faint / Smudged">Faint / Smudged</option>
+            <option value="Incorrect">Incorrect</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Seal Integrity</label>
+          <select id="sealingStatus" class="w-full border rounded-md px-3 py-1.5 text-sm">
+            <option value="Intact & Uniform">Intact & Uniform</option>
+            <option value="Channel / Wrinkle">Channel / Wrinkle</option>
+            <option value="Weak Seal">Weak Seal</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Pocket Appearance</label>
+          <select id="appearanceStatus" class="w-full border rounded-md px-3 py-1.5 text-sm">
+            <option value="Good">Good (Full Pockets)</option>
+            <option value="Empty Pocket">Empty Pocket</option>
+            <option value="Dented / Crushed">Dented / Crushed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Dual Verification Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 pt-3 bg-white p-3 rounded border">
+        <!-- Production Reading -->
+        <div class="space-y-2">
+          <span class="text-xs font-bold text-slate-700 block">1. Production Reading</span>
+          <div class="flex items-center space-x-4">
+            <label class="inline-flex items-center text-sm">
+              <input type="radio" name="prodResult" value="PASS" checked class="text-emerald-600">
+              <span class="ml-1.5 font-semibold text-emerald-700">PASS</span>
+            </label>
+            <label class="inline-flex items-center text-sm">
+              <input type="radio" name="prodResult" value="FAIL" class="text-red-600">
+              <span class="ml-1.5 font-semibold text-red-700">FAIL</span>
+            </label>
+          </div>
+          <input type="text" id="prodOperator" placeholder="Production Operator ID" required class="w-full border rounded px-2 py-1 text-xs">
+        </div>
+
+        <!-- QA Verification Reading -->
+        <div class="space-y-2">
+          <span class="text-xs font-bold text-slate-700 block">2. QA Personnel Reading (Verification)</span>
+          <div class="flex items-center space-x-4">
+            <label class="inline-flex items-center text-sm">
+              <input type="radio" name="qaResult" value="PASS" checked class="text-emerald-600">
+              <span class="ml-1.5 font-semibold text-emerald-700">PASS</span>
+            </label>
+            <label class="inline-flex items-center text-sm">
+              <input type="radio" name="qaResult" value="FAIL" class="text-red-600">
+              <span class="ml-1.5 font-semibold text-red-700">FAIL</span>
+            </label>
+          </div>
+          <input type="text" id="qaInspector" placeholder="QA Officer Badge ID" required class="w-full border rounded px-2 py-1 text-xs">
+        </div>
+      </div>
+
+      <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-md text-sm transition">
+        Submit Inspection Entry
+      </button>
+    </form>
+
+    <!-- Inspection Log Table -->
+    <div class="overflow-x-auto border rounded-lg">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead class="bg-slate-100 text-slate-700 uppercase font-semibold border-b">
+          <tr>
+            <th class="p-3">Time</th>
+            <th class="p-3">In-Process Status</th>
+            <th class="p-3">Leak Test Parameters</th>
+            <th class="p-3">Production Reading</th>
+            <th class="p-3">QA Reading</th>
+            <th class="p-3">Operator / QA ID</th>
+          </tr>
+        </thead>
+        <tbody id="logTableBody" class="divide-y divide-slate-200">
+          <!-- Dynamic entries inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('timeStamp').value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+    document.getElementById('ipqcForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const time = document.getElementById('timeStamp').value;
+      const qty = document.getElementById('sampleQty').value;
+      const vacuum = document.getElementById('vacuumLevel').value;
+      const hold = document.getElementById('holdTime').value;
+      
+      const coding = document.getElementById('codingStatus').value;
+      const sealing = document.getElementById('sealingStatus').value;
+      const appearance = document.getElementById('appearanceStatus').value;
+      
+      const prodResult = document.querySelector('input[name="prodResult"]:checked').value;
+      const qaResult = document.querySelector('input[name="qaResult"]:checked').value;
+      
+      const prodOp = document.getElementById('prodOperator').value;
+      const qaInspector = document.getElementById('qaInspector').value;
+
+      const prodBadgeClass = prodResult === 'PASS' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800';
+      const qaBadgeClass = qaResult === 'PASS' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800';
+
+      const tr = document.createElement('tr');
+      tr.className = "hover:bg-slate-50";
+      tr.innerHTML = `
+        <td class="p-3 font-bold">${time}</td>
+        <td class="p-3">
+          <ul class="list-disc list-inside">
+            <li>Code: ${coding}</li>
+            <li>Seal: ${sealing}</li>
+            <li>Look: ${appearance}</li>
+          </ul>
+        </td>
+        <td class="p-3">${vacuum} mmHg / ${hold} min<br>Qty: ${qty} pcs</td>
+        <td class="p-3"><span class="px-2 py-1 rounded-full font-bold ${prodBadgeClass}">${prodResult}</span></td>
+        <td class="p-3"><span class="px-2 py-1 rounded-full font-bold ${qaBadgeClass}">${qaResult}</span></td>
+        <td class="p-3">
+          <span class="block">Prod: ${prodOp}</span>
+          <span class="block text-slate-500">QA: ${qaInspector}</span>
+        </td>
+      `;
+
+      document.getElementById('logTableBody').prepend(tr);
+    });
+  </script>
+</body>
+</html>
